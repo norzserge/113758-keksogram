@@ -64,8 +64,9 @@
       element = filterForm.elements[i];                       // записываем в переменную все элементы формы
       if (element.checked) {                                  // если значение свойства checked равно true
         docCookies.setItem(element.name, element.value);      // записываем в cookie значения name и value элементов
-      };
-              
+      } else {
+         docCookies.removeItem(element.name);  
+      }
     } 
 
 // конец моего кода      
