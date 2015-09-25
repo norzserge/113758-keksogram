@@ -16,6 +16,7 @@ function filterShow(){
 
 	var picturesContainer = document.querySelector('.pictures');				// записываем в переменную элемент, в который будем помещать img
 	var pictureTemplate = document.getElementById('picture-template');			// записываем в переменную конструкцию, которая будет шаблоном для вывода img
+	var IMAGE_FAILURE_TIMEOUT = 10000;											// устанавливаем максимальное количество времени для загрузки img с сервера
 
 	var picturesFragment = document.createDocumentFragment();					// записываем в fragment множество элементов для последующего добавления в DOM (ускоряет производительность)
 
@@ -31,11 +32,16 @@ function filterShow(){
 	    	var newPicture = new Image();											// создаем новый объект Image
 	    	newPicture.src = picture['url'];										// присваиваем url новому объекту
 	    	var oldPicture = newPictureElement.querySelector('img');				// находим старый элемент img и присваиваем переменной
+
+		    var imageLoadTimeout = setTimeout(function() {							// устанавливаем тайм-аут для загрузки img
+		    	newPictureElement.classList.add('picture-load-failure');			// если в течении 10 сек img не загрузится, то присваиваем ей класс .picture-load-failure
+		    }, IMAGE_FAILURE_TIMEOUT);
 	    	
 	    	newPicture.onload = function() {										// по загрузке изображения выполняем: 
 	    		newPictureElement.replaceChild(newPicture,oldPicture);				// заменяем старый img новым img
 	    		newPicture.style.height = '182px';
 	    		newPicture.style.width = '182px';
+	    		clearTimeout(imageLoadTimeout);										// отменяем тайм-аут если изображение загрузилось не позднее 10 сек
 	    	}
 
 			newPicture.onerror = function(evt) {
