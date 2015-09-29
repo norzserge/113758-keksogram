@@ -23,7 +23,7 @@
         previewImage.className = 'filter-image-preview' + ' ' + filterMap[selectedFilter.value];   // присваиваем элементу соответствующий класс фильтра
       }
     }
-  };
+  }
 
 // конец моего кода
 
