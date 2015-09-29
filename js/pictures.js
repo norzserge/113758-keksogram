@@ -12,23 +12,23 @@
 
 // скрываем фильтры, добавляя класс hidden
 
-	function filterHidden() {
-		document.querySelector('.filters').classList.add('hidden');
+    function filterHidden() {
+  		document.querySelector('.filters').classList.add('hidden');
 	}
 
-	filterHidden();
+  	filterHidden();
 
 // функция показа фильтров (удаление класса hidden)
 
-	function filterShow() {
-		document.querySelector('.filters').classList.remove('hidden');
+  	function filterShow() {
+  		document.querySelector('.filters').classList.remove('hidden');
 	}
 
-	var picturesContainer = document.querySelector('.pictures');																		// записываем в переменную элемент, в который будем помещать img
-	var REQUEST_FAILURE_TIMEOUT = 10000;																														// устанавливаем максимальное количество времени для загрузки img с сервера
-	var pictures;
+  	var picturesContainer = document.querySelector('.pictures');																		// записываем в переменную элемент, в который будем помещать img
+  	var REQUEST_FAILURE_TIMEOUT = 10000;																														// устанавливаем максимальное количество времени для загрузки img с сервера
+  	var pictures;
 
-	function renderPictures(pictures) {
+  	function renderPictures(pictures) {
 
     picturesContainer.classList.remove('picture-load-failure');
     picturesContainer.innerHTML = '';
