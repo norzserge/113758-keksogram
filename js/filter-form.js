@@ -1,4 +1,4 @@
-// скрипт filter-form.js
+'use strict';                                                      // строгий режим для соответствия современному стандарту
 
 (function() {
   var uploadForm = document.forms['upload-select-image'];
@@ -13,16 +13,16 @@
 
 // добавляем функцию чтения cookies
 
-  var restoreFormValueFromCookies = function(form) {
+  function restoreFormValueFromCookies(form) {
     var element;
     for (var i = 0; i < form.elements.length; i++) {              // записываем в переменную элементы формы
       element = form.elements[i];
 
-      if (element.value == docCookies.getItem(element.name)) {    // условие: если значение элемента равно значению из cookie
+      if (element.value === docCookies.getItem(element.name)) {    // условие: если значение элемента равно значению из cookie
         element.checked = true;                                   // присваеваем элементу свойство checked
-        previewImage.className = 'filter-image-preview' + ' ' + filterMap[selectedFilter.value]   // присваиваем элементу соответствующий класс фильтра
+        previewImage.className = 'filter-image-preview' + ' ' + filterMap[selectedFilter.value];   // присваиваем элементу соответствующий класс фильтра
       }
-    };
+    }
   };
 
 // конец моего кода
@@ -37,12 +37,12 @@
     }
 
     previewImage.className = 'filter-image-preview' + ' ' + filterMap[selectedFilter.value];
-  };
+  }
 
   for (var i = 0, l = selectedFilter.length; i < l; i++) {
-    selectedFilter[i].onchange = function(evt) {
+    selectedFilter[i].onchange = function() {
       setFilter();
-    }
+    };
   }
 
   prevButton.onclick = function(evt) {
@@ -53,24 +53,20 @@
     resizeForm.classList.remove('invisible');
   };
 
-  filterForm.onsubmit = function(evt) {       
-
-    evt.preventDefault();                     
-
-// перебираем элементы формы filterForm перед отправкой изображения на сервер   
-      
+  filterForm.onsubmit = function(evt) {
+    evt.preventDefault();
+    // перебираем элементы формы filterForm перед отправкой изображения на сервер
     var element;                                              // объявляем переменную
-    for (var i = 0; i < filterForm.elements.length; i++) {    // циклом перебираем элементы формы document.forms['upload-filter']
+    for (i = 0; i < filterForm.elements.length; i++) {    // циклом перебираем элементы формы document.forms['upload-filter']
       element = filterForm.elements[i];                       // записываем в переменную все элементы формы
       if (element.checked) {                                  // если значение свойства checked равно true
         docCookies.setItem(element.name, element.value);      // записываем в cookie значения name и value элементов
       } else {
-         docCookies.removeItem(element.name);  
+        docCookies.removeItem(element.name);
       }
-    } 
+    }
 
-// конец моего кода      
-      
+// конец моего кода
     uploadForm.classList.remove('invisible');
     filterForm.classList.add('invisible');
 
@@ -79,7 +75,6 @@
   };
 
   setFilter();
-  
   restoreFormValueFromCookies(filterForm);     // вызываем функцию чтения cookies
 
 

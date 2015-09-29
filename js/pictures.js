@@ -1,5 +1,4 @@
-
-(function(){
+(function() {
 
 	var ReadyState = {
     'UNSENT': 0,
@@ -11,7 +10,7 @@
 
 // скрываем фильтры, добавляя класс hidden
 
-	function filterHidden(){
+	function filterHidden() {
 		document.querySelector('.filters').classList.add('hidden');
 	};
 
@@ -19,7 +18,7 @@
 
 // функция показа фильтров (удаление класса hidden)
 
-	function filterShow(){
+	function filterShow() {
 		document.querySelector('.filters').classList.remove('hidden');
 	};
 
@@ -119,15 +118,15 @@
     switch (filterID) {
 
       case 'filter-new':
-        filteredPictures = filteredPictures.sort(function(a, b) {
-           return a.date - b.date;
+        filteredPictures = filteredPictures.sort(function(first, second) {
+          return Date.parse(second.date) - Date.parse(first.date);
         });
 
         break;
 
       case 'filter-discussed':
-        filteredPictures = filteredPictures.sort(function(a, b) {
-        	return b.comments - a.comments;
+        filteredPictures = filteredPictures.sort(function(first, second) {
+        	return second.comments - first.comments;
         });
 
         break;
