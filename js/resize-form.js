@@ -48,11 +48,11 @@
 // вводим функцию поиска максимального значения для ввода в поле "Слева"
 
   function reSizeXLimit() {
-    if (reSizeSize.value !== '') {                                            // условие: если значение поле "Сторона" не пустое - выполняем код
-      var reSizeSumX = parseInt(reSizeX.value) + parseInt(reSizeSize.value);  // складываем значение смещения по Х и длину стороны
-      if (reSizeSumX >= previewImageWidth) {                                  // если сумма смещения и длины стороны больше ширины изображения
-        reSizeX.max = previewImageWidth - reSizeSize.value;                   // устанавливаем reSizeX.max равное previewImageWidth - reSizeSize.value
-        reSizeX.value = reSizeX.max;                                          // устанавливаем максимальное значение для пользователя если он ввел значение, выходящее за ограничение
+    if (reSizeSize.value !== '') {                                                    // условие: если значение поле "Сторона" не пустое - выполняем код
+      var reSizeSumX = parseInt(reSizeX.value, 10) + parseInt(reSizeSize.value, 10);  // складываем значение смещения по Х и длину стороны
+      if (reSizeSumX >= previewImageWidth) {                                          // если сумма смещения и длины стороны больше ширины изображения
+        reSizeX.max = previewImageWidth - reSizeSize.value;                           // устанавливаем reSizeX.max равное previewImageWidth - reSizeSize.value
+        reSizeX.value = reSizeX.max;                                                  // устанавливаем максимальное значение для пользователя если он ввел значение, выходящее за ограничение
       }
     } else {
       reSizeX.value = '0';                                                     // обнуляем значение "Слева"
@@ -63,7 +63,7 @@
 
   function reSizeYLimit() {
     if (reSizeSize.value !== '') {
-      var reSizeSumY = parseInt(reSizeY.value) + parseInt(reSizeSize.value);
+      var reSizeSumY = parseInt(reSizeY.value, 10) + parseInt(reSizeSize.value, 10);
       if (reSizeSumY >= previewImageHeight) {
         reSizeY.max = previewImageHeight - reSizeSize.value;
         reSizeY.value = reSizeY.max;                                           // устанавливаем максимальное значение для пользователя если он ввел значение, выходящее за ограничение
