@@ -96,7 +96,7 @@
           if (loadedXhr.status === 200) {
             var data = loadedXhr.response;
             picturesContainer.classList.remove('pictures-loading');
-            callback(JSON.parse(data));
+            return callback(JSON.parse(data));
           }
 
           if (loadedXhr.status > 400) {
