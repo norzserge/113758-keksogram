@@ -12,29 +12,29 @@
 
 // скрываем фильтры, добавляя класс hidden
 
-    function filterHidden() {
-  		document.querySelector('.filters').classList.add('hidden');
+  function filterHidden() {
+    document.querySelector('.filters').classList.add('hidden');
 	}
 
-  	filterHidden();
+  filterHidden();
 
 // функция показа фильтров (удаление класса hidden)
 
-  	function filterShow() {
-  		document.querySelector('.filters').classList.remove('hidden');
+  function filterShow() {
+    document.querySelector('.filters').classList.remove('hidden');
 	}
 
-  	var picturesContainer = document.querySelector('.pictures');																		// записываем в переменную элемент, в который будем помещать img
-  	var REQUEST_FAILURE_TIMEOUT = 10000;																														// устанавливаем максимальное количество времени для загрузки img с сервера
-  	var pictures;
+  var picturesContainer = document.querySelector('.pictures');																		// записываем в переменную элемент, в который будем помещать img
+  var REQUEST_FAILURE_TIMEOUT = 10000;																														// устанавливаем максимальное количество времени для загрузки img с сервера
+  var pictures;
 
-  	function renderPictures(pictures) {
+  function renderPictures(pictures) {
 
     picturesContainer.classList.remove('picture-load-failure');
     picturesContainer.innerHTML = '';
 
-		var pictureTemplate = document.getElementById('picture-template');
-		var picturesFragment = document.createDocumentFragment();
+    var pictureTemplate = document.getElementById('picture-template');
+    var picturesFragment = document.createDocumentFragment();
 
 		pictures.forEach(function(picture) {																												// итерируемся по объектам массива pictures через forEach
 			var newPictureElement = pictureTemplate.content.children[0].cloneNode(true);							// клонируем первый элемент шаблона вместе с вложенными элементами, за что отвечает cloneNode(true);
