@@ -109,7 +109,7 @@
     xhr.ontimeout = function() {
       showLoadFailure();
     };
-	}
+  }
 
   function filterPictures(pictures, filterID) {
     var filteredPictures = pictures.slice(0);																								// копируем массив pictures с первого элемента .slice(0)
@@ -161,7 +161,7 @@
   loadPictures(function(loadedPictures) {
     pictures = loadedPictures;
     setActiveFilter('filter-popular');
-	});
+  });
 
   filterShow();																																									// инициализируем функцию показа фильтров
 
