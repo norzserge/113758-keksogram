@@ -37,16 +37,16 @@
 		var picturesFragment = document.createDocumentFragment();
 
 		pictures.forEach(function(picture) {																												// итерируемся по объектам массива pictures через forEach
-			var newPictureElement = pictureTemplate.content.children[0].cloneNode(true);								// клонируем первый элемент шаблона вместе с вложенными элементами, за что отвечает cloneNode(true);
+			var newPictureElement = pictureTemplate.content.children[0].cloneNode(true);							// клонируем первый элемент шаблона вместе с вложенными элементами, за что отвечает cloneNode(true);
 
-		  newPictureElement.querySelector('.picture-comments').textContent = picture['comments'];		// в элемент шаблона .picture-comments добавляем соответствуюющее значение из объекта массива pictures
-		  newPictureElement.querySelector('.picture-likes').textContent = picture['likes'];					// в элемент шаблона .picture-likes добавляем соответствуюющее значение из объекта массива pictures
+      newPictureElement.querySelector('.picture-comments').textContent = picture['comments'];		// в элемент шаблона .picture-comments добавляем соответствуюющее значение из объекта массива pictures
+      newPictureElement.querySelector('.picture-likes').textContent = picture['likes'];					// в элемент шаблона .picture-likes добавляем соответствуюющее значение из объекта массива pictures
 
-		  picturesFragment.appendChild(newPictureElement);																					// добавляем в picturesFragment новые эелементы
+      picturesFragment.appendChild(newPictureElement);																					// добавляем в picturesFragment новые эелементы
 
-		  if (picture['url']) {																																			// если элемент объекта имеет url
-		    var newPicture = new Image();																														// создаем новый объект Image
-		    newPicture.src = picture['url'];																												// присваиваем url новому объекту
+      if (picture['url']) {																																			// если элемент объекта имеет url
+        var newPicture = new Image();																														// создаем новый объект Image
+        newPicture.src = picture['url'];																												// присваиваем url новому объекту
 
         var imageLoadTimeout = setTimeout(function() {																					// устанавливаем тайм-аут для загрузки img
           newPictureElement.classList.add('picture-load-failure');															// если в течении 10 сек img не загрузится, то присваиваем ей класс .picture-load-failure
@@ -56,9 +56,9 @@
           var oldPicture = newPictureElement.querySelector('img');															// находим старый элемент img и присваиваем переменной
           newPicture.style.height = '182px';
           newPicture.style.width = '182px';
-          newPictureElement.replaceChild(newPicture,oldPicture);																// заменяем старый img новым img
+          newPictureElement.replaceChild(newPicture, oldPicture);																// заменяем старый img новым img
           clearTimeout(imageLoadTimeout);																												// отменяем тайм-аут если изображение загрузилось не позднее 10 сек
-        }
+        };
 
 				newPicture.onerror = function() {
           newPictureElement.classList.add('picture-load-failure');
@@ -93,7 +93,7 @@
 
         case ReadyState.DONE:
         default:
-          if (loadedXhr.status == 200) {
+          if (loadedXhr.status === 200) {
             var data = loadedXhr.response;
             picturesContainer.classList.remove('pictures-loading');
             callback(JSON.parse(data));
@@ -108,7 +108,7 @@
 
     xhr.ontimeout = function() {
       showLoadFailure();
-    }
+    };
 	}
 
   function filterPictures(pictures, filterID) {
@@ -152,13 +152,13 @@
 
         document.querySelector('.picture-filter-selected').classList.remove('picture-filter-selected');
         clickedFilter.classList.add('picture-filter-selected');
-      }
+      };
     }
   }
 
   initFilters();
 
-	loadPictures(function(loadedPictures){
+	loadPictures(function(loadedPictures) {
 		pictures = loadedPictures;
 		setActiveFilter('filter-popular');
 	});
