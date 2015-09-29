@@ -61,9 +61,9 @@
         };
 
         newPicture.onerror = function() {
-  newPictureElement.classList.add('picture-load-failure');
-  clearTimeout(imageLoadTimeout);
-};
+          newPictureElement.classList.add('picture-load-failure');
+          clearTimeout(imageLoadTimeout);
+        };
       }
     });
 
@@ -76,15 +76,15 @@
   }
 
   function loadPictures(callback) {
-  var xhr = new XMLHttpRequest();
-  xhr.timeout = REQUEST_FAILURE_TIMEOUT;
-  xhr.open('get', 'data/pictures.json');
-  xhr.send();
+    var xhr = new XMLHttpRequest();
+    xhr.timeout = REQUEST_FAILURE_TIMEOUT;
+    xhr.open('get', 'data/pictures.json');
+    xhr.send();
 
-  xhr.onreadystatechange = function(evt) {
-    var loadedXhr = evt.target;
+    xhr.onreadystatechange = function(evt) {
+      var loadedXhr = evt.target;
 
-    switch (loadedXhr.readyState) {
+      switch (loadedXhr.readyState) {
         case ReadyState.OPENED:
         case ReadyState.HEADERS_RECEIVED:
         case ReadyState.LOADING:
@@ -104,11 +104,11 @@
           }
           break;
       }
-  };
+    };
 
-  xhr.ontimeout = function() {
-    showLoadFailure();
-  };
+    xhr.ontimeout = function() {
+      showLoadFailure();
+    };
 	}
 
   function filterPictures(pictures, filterID) {
@@ -159,8 +159,8 @@
   initFilters();
 
   loadPictures(function(loadedPictures) {
-  pictures = loadedPictures;
-  setActiveFilter('filter-popular');
+    pictures = loadedPictures;
+    setActiveFilter('filter-popular');
 	});
 
   filterShow();																																									// инициализируем функцию показа фильтров
