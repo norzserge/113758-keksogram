@@ -60,14 +60,14 @@
           clearTimeout(imageLoadTimeout);																												// отменяем тайм-аут если изображение загрузилось не позднее 10 сек
         };
 
-				newPicture.onerror = function() {
-          newPictureElement.classList.add('picture-load-failure');
-          clearTimeout(imageLoadTimeout);
+        newPicture.onerror = function() {
+  newPictureElement.classList.add('picture-load-failure');
+  clearTimeout(imageLoadTimeout);
 };
       }
-});
+    });
 
-		picturesContainer.appendChild(picturesFragment);																							// добавляем в <div class="pictures"></div> новые эелементы через picturesFragment
+    picturesContainer.appendChild(picturesFragment);																							// добавляем в <div class="pictures"></div> новые эелементы через picturesFragment
 
   }
 
@@ -75,16 +75,16 @@
     picturesContainer.classList.add('pictures-failure');
   }
 
-	  function loadPictures(callback) {
+  function loadPictures(callback) {
   var xhr = new XMLHttpRequest();
   xhr.timeout = REQUEST_FAILURE_TIMEOUT;
   xhr.open('get', 'data/pictures.json');
   xhr.send();
 
   xhr.onreadystatechange = function(evt) {
-      var loadedXhr = evt.target;
+    var loadedXhr = evt.target;
 
-      switch (loadedXhr.readyState) {
+    switch (loadedXhr.readyState) {
         case ReadyState.OPENED:
         case ReadyState.HEADERS_RECEIVED:
         case ReadyState.LOADING:
@@ -104,11 +104,11 @@
           }
           break;
       }
-    };
+  };
 
   xhr.ontimeout = function() {
-      showLoadFailure();
-    };
+    showLoadFailure();
+  };
 	}
 
   function filterPictures(pictures, filterID) {
@@ -118,7 +118,7 @@
 
       case 'filter-new':
         filteredPictures = filteredPictures.sort(function(first, second) {
-            return Date.parse(second.date) - Date.parse(first.date);
+          return Date.parse(second.date) - Date.parse(first.date);
         });
 
         break;
@@ -158,9 +158,9 @@
 
   initFilters();
 
-	loadPictures(function(loadedPictures) {
-    pictures = loadedPictures;
-    setActiveFilter('filter-popular');
+  loadPictures(function(loadedPictures) {
+  pictures = loadedPictures;
+  setActiveFilter('filter-popular');
 	});
 
   filterShow();																																									// инициализируем функцию показа фильтров
