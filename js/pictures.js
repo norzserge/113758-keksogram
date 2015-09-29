@@ -137,6 +137,8 @@
     return filteredPictures;
   }
 
+  var pictures;
+
   function setActiveFilter(filterID) {
     var filteredPictures = filterPictures(pictures, filterID);
     renderPictures(filteredPictures);
@@ -156,8 +158,6 @@
   }
 
   initFilters();
-
-  var pictures;
 
   loadPictures(function(loadedPictures) {
     pictures = loadedPictures;
