@@ -14,7 +14,7 @@
 
 	function filterHidden() {
 		document.querySelector('.filters').classList.add('hidden');
-	};
+	}
 
 	filterHidden();
 
@@ -22,7 +22,7 @@
 
 	function filterShow() {
 		document.querySelector('.filters').classList.remove('hidden');
-	};
+	}
 
 	var picturesContainer = document.querySelector('.pictures');																		// записываем в переменную элемент, в который будем помещать img
 	var REQUEST_FAILURE_TIMEOUT = 10000;																														// устанавливаем максимальное количество времени для загрузки img с сервера
@@ -36,39 +36,36 @@
 		var pictureTemplate = document.getElementById('picture-template');
 		var picturesFragment = document.createDocumentFragment();
 
-		pictures.forEach(function(picture, i) {																												// итерируемся по объектам массива pictures через forEach
+		pictures.forEach(function(picture) {																												// итерируемся по объектам массива pictures через forEach
 			var newPictureElement = pictureTemplate.content.children[0].cloneNode(true);								// клонируем первый элемент шаблона вместе с вложенными элементами, за что отвечает cloneNode(true);
 
-		    newPictureElement.querySelector('.picture-comments').textContent = picture['comments'];		// в элемент шаблона .picture-comments добавляем соответствуюющее значение из объекта массива pictures
-		    newPictureElement.querySelector('.picture-likes').textContent = picture['likes'];					// в элемент шаблона .picture-likes добавляем соответствуюющее значение из объекта массива pictures
+		  newPictureElement.querySelector('.picture-comments').textContent = picture['comments'];		// в элемент шаблона .picture-comments добавляем соответствуюющее значение из объекта массива pictures
+		  newPictureElement.querySelector('.picture-likes').textContent = picture['likes'];					// в элемент шаблона .picture-likes добавляем соответствуюющее значение из объекта массива pictures
 
-		    picturesFragment.appendChild(newPictureElement);																					// добавляем в picturesFragment новые эелементы
+		  picturesFragment.appendChild(newPictureElement);																					// добавляем в picturesFragment новые эелементы
 
-		    if (picture['url']) {																																			// если элемент объекта имеет url
-		    	var newPicture = new Image();																														// создаем новый объект Image
-		    	newPicture.src = picture['url'];																												// присваиваем url новому объекту
+		  if (picture['url']) {																																			// если элемент объекта имеет url
+		    var newPicture = new Image();																														// создаем новый объект Image
+		    newPicture.src = picture['url'];																												// присваиваем url новому объекту
 
-			    var imageLoadTimeout = setTimeout(function() {																					// устанавливаем тайм-аут для загрузки img
-			    	newPictureElement.classList.add('picture-load-failure');															// если в течении 10 сек img не загрузится, то присваиваем ей класс .picture-load-failure
-			    }, REQUEST_FAILURE_TIMEOUT);
+        var imageLoadTimeout = setTimeout(function() {																					// устанавливаем тайм-аут для загрузки img
+          newPictureElement.classList.add('picture-load-failure');															// если в течении 10 сек img не загрузится, то присваиваем ей класс .picture-load-failure
+        }, REQUEST_FAILURE_TIMEOUT);
 
-		    	newPicture.onload = function() {																												// по загрузке изображения выполняем:
-		    		var oldPicture = newPictureElement.querySelector('img');															// находим старый элемент img и присваиваем переменной
-		    		newPicture.style.height = '182px';
-		    		newPicture.style.width = '182px';
-            // Date.parse(newPicture['date']);
+        newPicture.onload = function() {																												// по загрузке изображения выполняем:
+          var oldPicture = newPictureElement.querySelector('img');															// находим старый элемент img и присваиваем переменной
+          newPicture.style.height = '182px';
+          newPicture.style.width = '182px';
+          newPictureElement.replaceChild(newPicture,oldPicture);																// заменяем старый img новым img
+          clearTimeout(imageLoadTimeout);																												// отменяем тайм-аут если изображение загрузилось не позднее 10 сек
+        }
 
-		    		newPictureElement.replaceChild(newPicture,oldPicture);																// заменяем старый img новым img
-		    		clearTimeout(imageLoadTimeout);																												// отменяем тайм-аут если изображение загрузилось не позднее 10 сек
-		    	}
-
-					newPicture.onerror = function(evt) {
-			      newPictureElement.classList.add('picture-load-failure');
-			      clearTimeout(imageLoadTimeout);
-			    };
-		    }
-
-		});
+				newPicture.onerror = function() {
+          newPictureElement.classList.add('picture-load-failure');
+          clearTimeout(imageLoadTimeout);
+        };
+      }
+    });
 
 		picturesContainer.appendChild(picturesFragment);																							// добавляем в <div class="pictures"></div> новые эелементы через picturesFragment
 
@@ -79,39 +76,39 @@
   }
 
 	function loadPictures(callback) {
-	  var xhr = new XMLHttpRequest();
-	  xhr.timeout = REQUEST_FAILURE_TIMEOUT;
-	  xhr.open('get', 'data/pictures.json');
-	  xhr.send();
+    var xhr = new XMLHttpRequest();
+    xhr.timeout = REQUEST_FAILURE_TIMEOUT;
+    xhr.open('get', 'data/pictures.json');
+    xhr.send();
 
-	  xhr.onreadystatechange = function(evt) {
-	    var loadedXhr = evt.target;
+    xhr.onreadystatechange = function(evt) {
+      var loadedXhr = evt.target;
 
-	    switch (loadedXhr.readyState) {
-	      case ReadyState.OPENED:
-	      case ReadyState.HEADERS_RECEIVED:
-	      case ReadyState.LOADING:
-	        picturesContainer.classList.add('pictures-loading');
-	        break;
+      switch (loadedXhr.readyState) {
+        case ReadyState.OPENED:
+        case ReadyState.HEADERS_RECEIVED:
+        case ReadyState.LOADING:
+          picturesContainer.classList.add('pictures-loading');
+          break;
 
-	      case ReadyState.DONE:
-	      default:
-	        if (loadedXhr.status == 200) {
-	          var data = loadedXhr.response;
-	          picturesContainer.classList.remove('pictures-loading');
-	          callback(JSON.parse(data));
-	        }
+        case ReadyState.DONE:
+        default:
+          if (loadedXhr.status == 200) {
+            var data = loadedXhr.response;
+            picturesContainer.classList.remove('pictures-loading');
+            callback(JSON.parse(data));
+          }
 
-	        if (loadedXhr.status > 400) {
-	          showLoadFailure();
-	        }
-	        break;
-	    }
-	  };
+          if (loadedXhr.status > 400) {
+            showLoadFailure();
+          }
+          break;
+      }
+    };
 
-	  xhr.ontimeout = function() {
-	    showLoadFailure();
-	  }
+    xhr.ontimeout = function() {
+      showLoadFailure();
+    }
 	}
 
   function filterPictures(pictures, filterID) {
@@ -120,15 +117,15 @@
     switch (filterID) {
 
       case 'filter-new':
-        filteredPictures = filteredPictures.sort(function(first, second) {
+          filteredPictures = filteredPictures.sort(function(first, second) {
           return Date.parse(second.date) - Date.parse(first.date);
-        });
+          });
 
         break;
 
       case 'filter-discussed':
         filteredPictures = filteredPictures.sort(function(first, second) {
-        	return second.comments - first.comments;
+          return second.comments - first.comments;
         });
 
         break;
@@ -139,6 +136,11 @@
     }
 
     return filteredPictures;
+  }
+
+  function setActiveFilter(filterID) {
+    var filteredPictures = filterPictures(pictures, filterID);
+    renderPictures(filteredPictures);
   }
 
   function initFilters() {
@@ -154,12 +156,7 @@
     }
   }
 
-  function setActiveFilter(filterID) {
-    var filteredPictures = filterPictures(pictures, filterID);
-    renderPictures(filteredPictures);
-  }
-
-	initFilters();
+  initFilters();
 
 	loadPictures(function(loadedPictures){
 		pictures = loadedPictures;
@@ -167,7 +164,5 @@
 	});
 
 	filterShow();																																									// инициализируем функцию показа фильтров
-
-
 
 })();
