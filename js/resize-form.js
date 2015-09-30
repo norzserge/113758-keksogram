@@ -1,3 +1,5 @@
+'use strict';
+
 (function() {
   var uploadForm = document.forms['upload-select-image'];
   var resizeForm = document.forms['upload-resize'];
@@ -18,24 +20,24 @@
   var reSizeY = resizeForm['resize-y'];
   var reSizeSize = resizeForm['resize-size'];
 
-// получаем размер загруженного изображению по событию onload, т.к. до загрузки изображения скрипт определит его размер как 0 х 0 
+// получаем размер загруженного изображению по событию onload, т.к. до загрузки изображения скрипт определит его размер как 0 х 0
 
-  previewImage.onload = function(evt) {           // в параметр функции добавляем объект event, содержащий всю информацию о событии
+  previewImage.onload = function() {           // в параметр функции добавляем объект event, содержащий всю информацию о событии
     previewImageWidth = previewImage.width;       // присваиваем переменной значение width изображения
     previewImageHeight = previewImage.height;     // присваиваем переменной значение height изображения
     console.log(previewImageWidth);               // выводим width изображения для проверки
     console.log(previewImageHeight);              // выводим height изображения для проверки
-    
-    // ищем наименьшую сторону изображения для ограничения на ввод значения в поле "Сторона"    
-    
+
+    // ищем наименьшую сторону изображения для ограничения на ввод значения в поле "Сторона"
+
     if (previewImageWidth < previewImageHeight) { // если ширина меньше высоты, то она является наименьшим значением
       previewImageMinSide = previewImageWidth;
     } else {                                      // в противном случае наименьшая - высота
-      previewImageMinSide = previewImageHeight
+      previewImageMinSide = previewImageHeight;
     }
     console.log(previewImageMinSide);             // выводим в консоль наименьшую сторону для проверки
     reSizeSize.max = previewImageMinSide;           // максимальное значение для поле "Сторона" = наименьшей стороне изображения
-  }
+  };
 
 // устанавливаем минимальные значения для полей ввода "Слева", "Сверху" и "Сторона"
 
@@ -45,23 +47,23 @@
 
 // вводим функцию поиска максимального значения для ввода в поле "Слева"
 
-  function reSizeXLimit(){
-    if (reSizeSize.value !== '') {                                            // условие: если значение поле "Сторона" не пустое - выполняем код
-      var reSizeSumX = parseInt(reSizeX.value) + parseInt(reSizeSize.value);  // складываем значение смещения по Х и длину стороны
-      if (reSizeSumX >= previewImageWidth) {                                  // если сумма смещения и длины стороны больше ширины изображения
-        reSizeX.max = previewImageWidth - reSizeSize.value;                   // устанавливаем reSizeX.max равное previewImageWidth - reSizeSize.value
-        reSizeX.value = reSizeX.max;                                          // устанавливаем максимальное значение для пользователя если он ввел значение, выходящее за ограничение
+  function reSizeXLimit() {
+    if (reSizeSize.value !== '') {                                                    // условие: если значение поле "Сторона" не пустое - выполняем код
+      var reSizeSumX = parseInt(reSizeX.value, 10) + parseInt(reSizeSize.value, 10);  // складываем значение смещения по Х и длину стороны
+      if (reSizeSumX >= previewImageWidth) {                                          // если сумма смещения и длины стороны больше ширины изображения
+        reSizeX.max = previewImageWidth - reSizeSize.value;                           // устанавливаем reSizeX.max равное previewImageWidth - reSizeSize.value
+        reSizeX.value = reSizeX.max;                                                  // устанавливаем максимальное значение для пользователя если он ввел значение, выходящее за ограничение
       }
     } else {
       reSizeX.value = '0';                                                     // обнуляем значение "Слева"
     }
-  };
+  }
 
 // вводим функцию поиска максимального значения для ввода в поле "Сверху"
 
-  function reSizeYLimit(){
+  function reSizeYLimit() {
     if (reSizeSize.value !== '') {
-      var reSizeSumY = parseInt(reSizeY.value) + parseInt(reSizeSize.value);
+      var reSizeSumY = parseInt(reSizeY.value, 10) + parseInt(reSizeSize.value, 10);
       if (reSizeSumY >= previewImageHeight) {
         reSizeY.max = previewImageHeight - reSizeSize.value;
         reSizeY.value = reSizeY.max;                                           // устанавливаем максимальное значение для пользователя если он ввел значение, выходящее за ограничение
@@ -69,18 +71,18 @@
     } else {
       reSizeY.value = '0';
     }
-  };
- 
+  }
+
 // вводим функцию ограничения максимального значения для ввода в поле "Сторона"
 
-  function reSizeSizeLimit(){
+  function reSizeSizeLimit() {
     if (reSizeSize.value > previewImageMinSide) {
       reSizeSize.value = previewImageMinSide;
     } else {
       reSizeX.value = '0';                // обнуляем значения полей при изменении размера стороны
       reSizeY.value = '0';
     }
-  }; 
+  }
 
   reSizeSize.onchange = reSizeSizeLimit;  // инициализируем функцию при событии onchange (изменение значения поля input#resize-size)
   reSizeX.onchange = reSizeXLimit;        // инициализируем функцию при событии onchange (изменение значения поля input#resize-x)
