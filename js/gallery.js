@@ -44,11 +44,12 @@
         break;
       case Key.ESC:
         hideGallery();
+        break;
       default: break;
     }
   }
 
-  function showGallery(evt){                                                  // функция показа галереи (оверлея)
+  function showGallery() {                                                  // функция показа галереи (оверлея)
     galleryElement.classList.remove('invisible');
     closeButton.addEventListener('click', closeHandler);                      // вешаем на крестик по клику функцию закрытия галереи
     document.body.addEventListener('keydown', keyHandler);

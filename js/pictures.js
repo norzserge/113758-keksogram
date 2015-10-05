@@ -192,7 +192,7 @@
     });
 
     window.addEventListener('loadneeded', function() {
-      renderPictures(currentPictures, currentPage++, false)
+      renderPictures(currentPictures, currentPage++, false);
     });
   }
 
