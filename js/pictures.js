@@ -24,19 +24,31 @@
     document.querySelector('.filters').classList.remove('hidden');
   }
 
-  var picturesContainer = document.querySelector('.pictures');																		// записываем в переменную элемент, в который будем помещать img
-  var REQUEST_FAILURE_TIMEOUT = 10000;																														// устанавливаем максимальное количество времени для загрузки img с сервера
+  var REQUEST_FAILURE_TIMEOUT = 10000;																												  // устанавливаем максимальное количество времени для загрузки img с сервера
+  var PAGE_SIZE = 12;                                                                           // устанавливаем количество выводимых фотографий на странице
+
+  var picturesContainer = document.querySelector('.pictures');                                  // записываем в переменную элемент, в который будем помещать img
   var pictures;
+  var currentPictures;
+  var currentPage = 0;
 
-  function renderPictures(picturesToRendered) {
+  function renderPictures(picturesToRendered, pageNumber, replace) {
+    replace = typeof replace !== 'undefined' ? replace : true;
+    pageNumber = pageNumber || 0;                                                               // на случай если pageNumber не передали в функцию - она возьмет 0 (при pageNumber = false)
 
-    picturesContainer.classList.remove('picture-load-failure');
-    picturesContainer.innerHTML = '';
+    if (replace) {                                                                              // если replace == true, то чистим контейнер и удаляем дополнительные классы, а если false, то не чистя контейнер добавляем следующую страницу
+      picturesContainer.classList.remove('picture-load-failure');
+      picturesContainer.innerHTML = '';
+    }
 
     var pictureTemplate = document.getElementById('picture-template');
     var picturesFragment = document.createDocumentFragment();
 
-    picturesToRendered.forEach(function(picture) {																												// итерируемся по объектам массива pictures через forEach
+    var picturesFrom = pageNumber * PAGE_SIZE;
+    var picturesTo = picturesFrom + PAGE_SIZE;
+    picturesToRendered = picturesToRendered.slice(picturesFrom, picturesTo);
+
+    picturesToRendered.forEach(function(picture) {																							// итерируемся по объектам массива pictures через forEach
       var newPictureElement = pictureTemplate.content.children[0].cloneNode(true);							// клонируем первый элемент шаблона вместе с вложенными элементами, за что отвечает cloneNode(true);
 
       newPictureElement.querySelector('.picture-comments').textContent = picture['comments'];		// в элемент шаблона .picture-comments добавляем соответствуюющее значение из объекта массива pictures
@@ -135,34 +147,63 @@
         break;
     }
 
+    localStorage.setItem('filterID', filterID);
     return filteredPictures;
   }
 
-  function setActiveFilter(filterID) {
-    var filteredPictures = filterPictures(pictures, filterID);
-    renderPictures(filteredPictures);
+  function initFilters() {                                                                          // функция пробегается по всем фильтрам и каждому цепляет обработчик событий клика
+    var filtersContainer = document.querySelector('.filters');                                      // вешаем один обработчик на весь контейнер, в котором лежат кнопки с фильтрами
+
+    filtersContainer.addEventListener('click', function(evt) {
+      var clickedFilter = evt.target;                                                             // в перменную записываем элемент, по которому произошел клик (эта информация содержиться в объекте event)
+      setActiveFilter(clickedFilter.id);
+
+      document.querySelector('.picture-filter-selected').classList.remove('picture-filter-selected');
+      clickedFilter.classList.add('picture-filter-selected');
+    });
   }
 
-  function initFilters() {
-    var filterElements = document.querySelectorAll('.filters-radio');
-    for (var i = 0, l = filterElements.length; i < l; i++) {
-      filterElements[i].onclick = function(evt) {
-        var clickedFilter = evt.currentTarget;
-        setActiveFilter(clickedFilter.id);
+  function setActiveFilter(filterID) {
+    currentPictures = filterPictures(pictures, filterID);
+    currentPage = 0;
+    renderPictures(currentPictures, currentPage, true);
+  }
 
-        document.querySelector('.picture-filter-selected').classList.remove('picture-filter-selected');
-        clickedFilter.classList.add('picture-filter-selected');
-      };
+  function isNextPageAvailable() {
+    return currentPage < Math.ceil(pictures.length / PAGE_SIZE);
+  }
+
+  function isAtTheBottom() {
+    var GAP = 100;
+    return picturesContainer.getBoundingClientRect().bottom - GAP <= window.innerHeight;
+  }
+
+  function checkNextPage() {
+    if (isAtTheBottom() && isNextPageAvailable()) {
+      window.dispatchEvent(new CustomEvent('loadneeded'));
     }
   }
 
+  function initScroll() {
+    var someTimeout;
+    window.addEventListener('scroll', function() {
+      clearTimeout(someTimeout);
+      someTimeout = setTimeout(checkNextPage, 100);                                                 // устанавливаем таймаут для вызова функции по событию скрола
+    });
+
+    window.addEventListener('loadneeded', function() {
+      renderPictures(currentPictures, currentPage++, false);
+    });
+  }
+
   initFilters();
+  initScroll();
 
   loadPictures(function(loadedPictures) {
     pictures = loadedPictures;
-    setActiveFilter('filter-popular');
+    setActiveFilter(localStorage.getItem('filterID') || 'filter-popular');                          // выводим изображению по фильтру, который был выбран при предыдущей загрузке, либо фильтры по умолчанию если фильтр не был выбран
   });
 
-  filterShow();																																									// инициализируем функцию показа фильтров
+  filterShow();																																									    // инициализируем функцию показа фильтров
 
 })();
