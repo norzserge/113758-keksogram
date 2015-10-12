@@ -31,7 +31,7 @@
       }, REQUEST_FAILURE_TIMEOUT);
 
       newPicture.onload = function() {
-        newPictureElement.replaceChild(newPicture,oldPicture);
+        newPictureElement.replaceChild(newPicture, oldPicture);
         newPicture.style.width = '182px';
         newPicture.style.height = '182px';
         clearTimeout(imageLoadTimeout);

@@ -1,3 +1,5 @@
+/* global Photo: true */
+
 'use strict';
 
 (function() {
