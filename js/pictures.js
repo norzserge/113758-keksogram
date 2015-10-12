@@ -31,56 +31,42 @@
   var pictures;
   var currentPictures;
   var currentPage = 0;
+  var renderedPictures = [];
+
 
   function renderPictures(picturesToRendered, pageNumber, replace) {
     replace = typeof replace !== 'undefined' ? replace : true;
     pageNumber = pageNumber || 0;                                                               // на случай если pageNumber не передали в функцию - она возьмет 0 (при pageNumber = false)
-
+/*
+Удаляем список фотографий. Если массив renderedPictures не пустой - вызываем функцию .shift,
+которая выталкивает первый элемент массива и позволяет дальше с ним работать, а именно удалять
+с помощью .unrender()
+*/
     if (replace) {                                                                              // если replace == true, то чистим контейнер и удаляем дополнительные классы, а если false, то не чистя контейнер добавляем следующую страницу
+      var el;
+      while ((el = renderedPictures.shift())) {
+        el.unrender();
+      }
+
       picturesContainer.classList.remove('picture-load-failure');
-      picturesContainer.innerHTML = '';
     }
 
-    var pictureTemplate = document.getElementById('picture-template');
     var picturesFragment = document.createDocumentFragment();
 
     var picturesFrom = pageNumber * PAGE_SIZE;
     var picturesTo = picturesFrom + PAGE_SIZE;
     picturesToRendered = picturesToRendered.slice(picturesFrom, picturesTo);
-
-    picturesToRendered.forEach(function(picture) {																							// итерируемся по объектам массива pictures через forEach
-      var newPictureElement = pictureTemplate.content.children[0].cloneNode(true);							// клонируем первый элемент шаблона вместе с вложенными элементами, за что отвечает cloneNode(true);
-
-      newPictureElement.querySelector('.picture-comments').textContent = picture['comments'];		// в элемент шаблона .picture-comments добавляем соответствуюющее значение из объекта массива pictures
-      newPictureElement.querySelector('.picture-likes').textContent = picture['likes'];					// в элемент шаблона .picture-likes добавляем соответствуюющее значение из объекта массива pictures
-
-      picturesFragment.appendChild(newPictureElement);																					// добавляем в picturesFragment новые эелементы
-
-      if (picture['url']) {																																			// если элемент объекта имеет url
-        var newPicture = new Image();																														// создаем новый объект Image
-        newPicture.src = picture['url'];																												// присваиваем url новому объекту
-
-        var imageLoadTimeout = setTimeout(function() {																					// устанавливаем тайм-аут для загрузки img
-          newPictureElement.classList.add('picture-load-failure');															// если в течении 10 сек img не загрузится, то присваиваем ей класс .picture-load-failure
-        }, REQUEST_FAILURE_TIMEOUT);
-
-        newPicture.onload = function() {																												// по загрузке изображения выполняем:
-          var oldPicture = newPictureElement.querySelector('img');															// находим старый элемент img и присваиваем переменной
-          newPicture.style.height = '182px';
-          newPicture.style.width = '182px';
-          newPictureElement.replaceChild(newPicture, oldPicture);																// заменяем старый img новым img
-          clearTimeout(imageLoadTimeout);																												// отменяем тайм-аут если изображение загрузилось не позднее 10 сек
-        };
-
-        newPicture.onerror = function() {
-          newPictureElement.classList.add('picture-load-failure');
-          clearTimeout(imageLoadTimeout);
-        };
-      }
+/*
+Рисуем список фотографий. На каждой итерации цикла создаем объект Photo.
+Он отрисовывается в контейнер picturesFragment и добавляется в массив renderedPictures
+*/
+    picturesToRendered.forEach(function(pictureData) {																							// итерируемся по объектам массива pictures через forEach
+      var newPictureElement = new Photo(pictureData);
+      newPictureElement.render(picturesFragment);
+      renderedPictures.push(newPictureElement);
     });
 
     picturesContainer.appendChild(picturesFragment);																							// добавляем в <div class="pictures"></div> новые эелементы через picturesFragment
-
   }
 
   function showLoadFailure() {
@@ -157,9 +143,6 @@
     filtersContainer.addEventListener('click', function(evt) {
       var clickedFilter = evt.target;                                                             // в перменную записываем элемент, по которому произошел клик (эта информация содержиться в объекте event)
       setActiveFilter(clickedFilter.id);
-
-      document.querySelector('.picture-filter-selected').classList.remove('picture-filter-selected');
-      clickedFilter.classList.add('picture-filter-selected');
     });
   }
 
@@ -198,6 +181,7 @@
 
   initFilters();
   initScroll();
+
 
   loadPictures(function(loadedPictures) {
     pictures = loadedPictures;
